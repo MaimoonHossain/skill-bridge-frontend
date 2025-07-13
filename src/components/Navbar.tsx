@@ -93,6 +93,12 @@ export default function NavBar() {
               className='bg-white border rounded shadow py-1'
             >
               <DropdownMenu.Item
+                asChild
+                className='px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer'
+              >
+                <Link href='/profile'>Profile</Link>
+              </DropdownMenu.Item>
+              <DropdownMenu.Item
                 onSelect={handleLogout}
                 className='px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer'
               >
