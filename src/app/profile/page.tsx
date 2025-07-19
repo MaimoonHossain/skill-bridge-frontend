@@ -15,12 +15,19 @@ const schema = z.object({
   email: z.string().email("Invalid email"),
   phoneNumber: z.string().min(1, "Phone Number is required"),
   role: z.string().min(1, "Role is required"),
+  skills: z.string().optional(),
+  bio: z.string().optional(),
 });
 
 type FormData = z.infer<typeof schema>;
 
 export default function ProfilePage() {
   const [isEditing, setIsEditing] = useState(false);
+  const [preview, setPreview] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [selectedResume, setSelectedResume] = useState<File | null>(null);
+  const [resumeName, setResumeName] = useState<string>("");
+
   const user = useUserStore((state) => state.user);
   const setUser = useUserStore((state) => state.setUser);
 
@@ -34,20 +41,60 @@ export default function ProfilePage() {
     defaultValues: {
       fullName: user?.fullName || "",
       email: user?.email || "",
-      phoneNumber: user?.phoneNumber || "",
+      phoneNumber: user?.phoneNumber?.toString() || "",
       role: user?.role || "",
+      skills: user?.profile?.skills?.join(", ") || "",
+      bio: user?.profile?.bio || "",
     },
   });
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setSelectedFile(file);
+      setPreview(URL.createObjectURL(file));
+    }
+  };
+
+  const handleResumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setSelectedResume(file);
+      setResumeName(file.name);
+    }
+  };
+
   const onSubmit = async (data: FormData) => {
     try {
-      const res = await axiosInstance.put("/user/update", data, {
+      const formData = new FormData();
+      formData.append("fullName", data.fullName);
+      formData.append("email", data.email);
+      formData.append("phoneNumber", data.phoneNumber);
+      formData.append("role", data.role);
+      formData.append("skills", data.skills?.trim() || "");
+      formData.append("bio", data.bio || "");
+      if (selectedFile) {
+        formData.append("profilePhoto", selectedFile);
+      }
+      if (selectedResume) {
+        formData.append("resume", selectedResume);
+      }
+
+      const res = await axiosInstance.patch("user/profile/update", formData, {
         withCredentials: true,
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       });
+
       if (res.data.success) {
         toast.success("Profile updated successfully");
         setUser(res.data.user);
         setIsEditing(false);
+        setPreview(null);
+        setSelectedFile(null);
+        setSelectedResume(null);
+        setResumeName("");
       }
     } catch (err: any) {
       toast.error(err.response?.data?.message || "Update failed");
@@ -60,8 +107,14 @@ export default function ProfilePage() {
       email: user?.email || "",
       phoneNumber: user?.phoneNumber || "",
       role: user?.role || "",
+      skills: user?.profile?.skills?.join(", ") || "",
+      bio: user?.profile?.bio || "",
     });
     setIsEditing(true);
+    setPreview(null);
+    setSelectedFile(null);
+    setSelectedResume(null);
+    setResumeName("");
   };
 
   return (
@@ -72,7 +125,7 @@ export default function ProfilePage() {
         {/* Avatar */}
         <div className='flex-shrink-0'>
           <Image
-            src={user?.profile?.profilePhoto || DummyAvatar}
+            src={preview || user?.profile?.profilePhoto || DummyAvatar}
             alt='Profile'
             width={150}
             height={150}
@@ -106,6 +159,32 @@ export default function ProfilePage() {
                 Role
               </label>
               <p className='text-gray-800 capitalize'>{user?.role}</p>
+            </div>
+            <div>
+              <label className='block text-sm font-medium text-gray-600'>
+                Bio
+              </label>
+              <p className='text-gray-800'>
+                {user?.profile?.bio || "No bio available"}
+              </p>
+            </div>
+            <div>
+              <label className='block text-sm font-medium text-gray-600'>
+                Skills
+              </label>
+              <p className='text-gray-800'>
+                {user?.profile?.skills?.join(", ") || "No skills listed"}
+              </p>
+            </div>
+            <div>
+              <label className='block text-sm font-medium text-gray-600'>
+                Resume
+              </label>
+              <p className='text-gray-800'>
+                {user?.profile?.resume
+                  ? user.profile.resume.split("/").pop()
+                  : "No resume uploaded"}
+              </p>
             </div>
             <button
               onClick={handleEdit}
@@ -163,6 +242,56 @@ export default function ProfilePage() {
               </select>
               {errors.role && (
                 <p className='text-red-500 text-sm'>{errors.role.message}</p>
+              )}
+            </div>
+            <div>
+              <label className='block mb-1'>Bio</label>
+              <textarea
+                {...register("bio")}
+                className='w-full border px-3 py-2 rounded'
+              />
+              {errors.bio && (
+                <p className='text-red-500 text-sm'>{errors.bio.message}</p>
+              )}
+            </div>
+            <div>
+              <label className='block mb-1'>Skills (comma separated)</label>
+              <input
+                {...register("skills")}
+                className='w-full border px-3 py-2 rounded'
+              />
+              {errors.skills && (
+                <p className='text-red-500 text-sm'>{errors.skills.message}</p>
+              )}
+            </div>
+            <div>
+              <label className='block mb-1'>Profile Photo</label>
+              <input
+                type='file'
+                accept='image/*'
+                onChange={handleFileChange}
+                className='w-full'
+              />
+              {preview && (
+                <img
+                  src={preview}
+                  alt='Preview'
+                  className='mt-2 h-24 w-24 object-cover rounded-full'
+                />
+              )}
+            </div>
+            <div>
+              <label className='block mb-1'>Resume (PDF, DOC, DOCX)</label>
+              <input
+                type='file'
+                accept='.pdf,.doc,.docx'
+                onChange={handleResumeChange}
+                className='w-full'
+              />
+              {resumeName && (
+                <p className='mt-2 text-gray-700 text-sm'>
+                  Selected: {resumeName}
+                </p>
               )}
             </div>
             <div className='flex gap-2 mt-4'>

@@ -9,6 +9,9 @@ type User = {
   role: string;
   profile?: {
     profilePhoto?: string;
+    skills?: string[];
+    bio?: string;
+    resume?: string;
   };
 };
 
