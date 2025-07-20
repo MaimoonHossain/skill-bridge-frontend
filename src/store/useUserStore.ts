@@ -12,6 +12,7 @@ type User = {
     skills?: string[];
     bio?: string;
     resume?: string;
+    resumeOriginalName?: string;
   };
 };
 

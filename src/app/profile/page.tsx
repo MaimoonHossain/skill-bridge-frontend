@@ -9,6 +9,7 @@ import toast from "react-hot-toast";
 import { useUserStore } from "@/store/useUserStore";
 import Image from "next/image";
 import { DummyAvatar } from "@/assets/images";
+import Link from "next/link";
 
 const schema = z.object({
   fullName: z.string().min(1, "Full Name is required"),
@@ -176,16 +177,18 @@ export default function ProfilePage() {
                 {user?.profile?.skills?.join(", ") || "No skills listed"}
               </p>
             </div>
-            <div>
+            {/* on click on the resume name it should open on the new tab (the pdf) */}
+
+            <Link href={user?.profile?.resume || "#"} target='_blank'>
               <label className='block text-sm font-medium text-gray-600'>
                 Resume
               </label>
               <p className='text-gray-800'>
-                {user?.profile?.resume
-                  ? user.profile.resume.split("/").pop()
+                {user?.profile?.resumeOriginalName
+                  ? user.profile.resumeOriginalName
                   : "No resume uploaded"}
               </p>
-            </div>
+            </Link>
             <button
               onClick={handleEdit}
               className='mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition'
