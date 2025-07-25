@@ -14,6 +14,7 @@ const schema = z.object({
   phoneNumber: z.string().min(5, "Phone number is required"),
   password: z.string().min(6, "Password must be at least 6 characters"),
   role: z.string().min(1, "Role is required"),
+  profilePhoto: z.any().optional(), // Accept file or undefined
 });
 
 type FormData = z.infer<typeof schema>;
@@ -34,8 +35,23 @@ export default function SignUpPage() {
   const onSubmit = async (data: FormData) => {
     setLoading(true);
     setServerError("");
+
     try {
-      const res = await axiosInstance.post("user/register", data);
+      const formData = new FormData();
+      formData.append("fullName", data.fullName);
+      formData.append("email", data.email);
+      formData.append("phoneNumber", data.phoneNumber);
+      formData.append("password", data.password);
+      formData.append("role", data.role);
+
+      if (data.profilePhoto?.[0]) {
+        formData.append("profilePhoto", data.profilePhoto[0]);
+      }
+
+      const res = await axiosInstance.post("user/register", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
       if (res.data.success) {
         toast.success("Registration successful! Redirecting to login...");
         router.push("/login");
@@ -50,7 +66,11 @@ export default function SignUpPage() {
   return (
     <div className='max-w-md mx-auto mt-10 p-6 border rounded shadow'>
       <h1 className='text-2xl font-bold mb-4'>Sign Up</h1>
-      <form onSubmit={handleSubmit(onSubmit)} className='space-y-4'>
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className='space-y-4'
+        encType='multipart/form-data'
+      >
         <div>
           <label className='block mb-1'>Full Name</label>
           <input
@@ -61,17 +81,19 @@ export default function SignUpPage() {
             <p className='text-red-500 text-sm'>{errors.fullName.message}</p>
           )}
         </div>
+
         <div>
           <label className='block mb-1'>Email</label>
           <input
-            {...register("email")}
             type='email'
+            {...register("email")}
             className='w-full border p-2 rounded'
           />
           {errors.email && (
             <p className='text-red-500 text-sm'>{errors.email.message}</p>
           )}
         </div>
+
         <div>
           <label className='block mb-1'>Phone Number</label>
           <input
@@ -82,17 +104,19 @@ export default function SignUpPage() {
             <p className='text-red-500 text-sm'>{errors.phoneNumber.message}</p>
           )}
         </div>
+
         <div>
           <label className='block mb-1'>Password</label>
           <input
-            {...register("password")}
             type='password'
+            {...register("password")}
             className='w-full border p-2 rounded'
           />
           {errors.password && (
             <p className='text-red-500 text-sm'>{errors.password.message}</p>
           )}
         </div>
+
         <div>
           <label className='block mb-1'>Role</label>
           <select {...register("role")} className='w-full border p-2 rounded'>
@@ -104,7 +128,19 @@ export default function SignUpPage() {
             <p className='text-red-500 text-sm'>{errors.role.message}</p>
           )}
         </div>
+
+        <div>
+          <label className='block mb-1'>Profile Picture</label>
+          <input
+            type='file'
+            accept='image/*'
+            {...register("profilePhoto")}
+            className='w-full border p-2 rounded'
+          />
+        </div>
+
         {serverError && <p className='text-red-500 text-sm'>{serverError}</p>}
+
         <button
           type='submit'
           disabled={loading}
