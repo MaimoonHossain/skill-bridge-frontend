@@ -18,7 +18,7 @@ export default function NavBar() {
 
   const handleLogout = async () => {
     try {
-      await axiosInstance.post("/user/logout");
+      await axiosInstance.get("/user/logout");
       clearUser();
       toast.success("Logged out successfully");
       router.push("/login");
