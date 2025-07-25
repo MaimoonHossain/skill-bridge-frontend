@@ -18,10 +18,13 @@ export default function NavBar() {
 
   const handleLogout = async () => {
     try {
-      await axiosInstance.get("/user/logout");
-      clearUser();
-      toast.success("Logged out successfully");
-      router.push("/login");
+      const res = await axiosInstance.get("/user/logout");
+
+      if (res.data.success) {
+        clearUser();
+        toast.success("Logged out successfully");
+        router.push("/login");
+      }
     } catch (err) {
       toast.error("Failed to logout");
     }
