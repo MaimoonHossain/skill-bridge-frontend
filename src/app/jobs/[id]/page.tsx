@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import axiosInstance from "@/lib/axiosInstance";
 import Job from "@/types/job";
+import { formatDistanceToNow } from "date-fns";
 
 export default function JobDetailsPage() {
   const { id } = useParams();
@@ -110,9 +111,9 @@ export default function JobDetailsPage() {
         </div>
 
         <div className='text-sm text-gray-500'>
-          Posted on:{" "}
+          Posted&nbsp;
           <span className='text-gray-700'>
-            {new Date(job.createdAt).toLocaleDateString()}
+            {formatDistanceToNow(new Date(job.createdAt), { addSuffix: true })}
           </span>
         </div>
       </div>
