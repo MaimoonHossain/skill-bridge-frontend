@@ -7,6 +7,7 @@ import axiosInstance from "@/lib/axiosInstance";
 import Job from "@/types/job";
 import { formatDistanceToNow } from "date-fns";
 import { useUserStore } from "@/store/useUserStore";
+import toast from "react-hot-toast";
 
 export default function JobDetailsPage() {
   const { id } = useParams();
@@ -29,6 +30,28 @@ export default function JobDetailsPage() {
     if (id) fetchJob();
   }, [id]);
 
+  const handleApply = async () => {
+    if (!user) {
+      toast.error("You must be logged in to apply for jobs.");
+      return;
+    }
+
+    try {
+      await axiosInstance.post(`/application/apply/${id}`);
+      toast.success("Application submitted successfully!");
+      setJob((prevJob: any) => ({
+        ...prevJob,
+        applications: [
+          ...(prevJob?.applications || []),
+          { applicant: user.id },
+        ],
+      }));
+    } catch (err) {
+      console.error("Failed to apply for job:", err);
+      toast.error("Failed to submit application. Please try again.");
+    }
+  };
+
   if (loading) {
     return (
       <div className='flex justify-center items-center h-[60vh]'>
@@ -41,7 +64,9 @@ export default function JobDetailsPage() {
     return <div className='text-center mt-10 text-red-500'>Job not found.</div>;
   }
 
-  const applied = job.applications?.some((app) => app === user.id);
+  const applied = job.applications?.some(
+    (app: any) => app?.applicant === user?.id
+  );
 
   return (
     <div className='max-w-4xl mx-auto px-4 py-10'>
@@ -55,7 +80,14 @@ export default function JobDetailsPage() {
           </div>
           <button
             disabled={!user || applied}
-            className='px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors'
+            onClick={handleApply}
+            type='button'
+            className={`px-4 py-2 rounded-lg transition-colors 
+                  ${
+                    !user || applied
+                      ? "bg-gray-400 cursor-not-allowed"
+                      : "bg-blue-600 hover:bg-blue-700 text-white"
+                  }`}
           >
             {applied ? "Applied" : "Apply Now"}
           </button>

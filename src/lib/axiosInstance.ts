@@ -5,11 +5,24 @@ const axiosInstance = axios.create({
   withCredentials: true,
 });
 
-// Interceptor to add default headers if not provided
+// Request Interceptor: Ensures Content-Type is set
 axiosInstance.interceptors.request.use((config) => {
   config.headers["Content-Type"] =
     config.headers["Content-Type"] || "application/json";
   return config;
 });
+
+// Response Interceptor: Redirect on 401
+axiosInstance.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      if (typeof window !== "undefined") {
+        window.location.href = "/login"; // or your actual login route
+      }
+    }
+    return Promise.reject(error);
+  }
+);
 
 export default axiosInstance;

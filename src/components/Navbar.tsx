@@ -39,30 +39,53 @@ export default function NavBar() {
 
       {/* Navigation */}
       <div className='flex items-center space-x-4'>
-        <Link
-          href='/'
-          className={cn(
-            "text-gray-700 hover:text-blue-600 transition-colors font-medium"
-          )}
-        >
-          Home
-        </Link>
-        <Link
-          href='/jobs'
-          className={cn(
-            "text-gray-700 hover:text-blue-600 transition-colors font-medium"
-          )}
-        >
-          Jobs
-        </Link>
-        <Link
-          href='/browse'
-          className={cn(
-            "text-gray-700 hover:text-blue-600 transition-colors font-medium"
-          )}
-        >
-          Browse
-        </Link>
+        {user && user.role === "recruiter" ? (
+          <>
+            <Link
+              href='/recruiter/companies'
+              className={cn(
+                "text-gray-700 hover:text-blue-600 transition-colors font-medium"
+              )}
+            >
+              Dashboard
+            </Link>
+            <Link
+              href='/recruiter/jobs'
+              className={cn(
+                "text-gray-700 hover:text-blue-600 transition-colors font-medium"
+              )}
+            >
+              My Jobs
+            </Link>
+          </>
+        ) : (
+          <>
+            <Link
+              href='/'
+              className={cn(
+                "text-gray-700 hover:text-blue-600 transition-colors font-medium"
+              )}
+            >
+              Home
+            </Link>
+            <Link
+              href='/jobs'
+              className={cn(
+                "text-gray-700 hover:text-blue-600 transition-colors font-medium"
+              )}
+            >
+              Jobs
+            </Link>
+            <Link
+              href='/browse'
+              className={cn(
+                "text-gray-700 hover:text-blue-600 transition-colors font-medium"
+              )}
+            >
+              Browse
+            </Link>
+          </>
+        )}
 
         {user ? (
           <DropdownMenu.Root>
@@ -95,12 +118,14 @@ export default function NavBar() {
               align='end'
               className='bg-white border rounded shadow py-1'
             >
-              <DropdownMenu.Item
-                asChild
-                className='px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer'
-              >
-                <Link href='/profile'>Profile</Link>
-              </DropdownMenu.Item>
+              {user && user.role !== "recruiter" && (
+                <DropdownMenu.Item
+                  asChild
+                  className='px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer'
+                >
+                  <Link href='/profile'>Profile</Link>
+                </DropdownMenu.Item>
+              )}
               <DropdownMenu.Item
                 onSelect={handleLogout}
                 className='px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer'
