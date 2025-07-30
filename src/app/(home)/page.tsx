@@ -1,8 +1,11 @@
 import JobSearchBar from "@/components/JobSearchBar";
 import LatestJobs from "@/components/LatestJobs";
 import Footer from "@/components/Footer";
+import useGetAllJobs from "@/hooks/useGetAllJobs";
 
 export default function Home() {
+ 
+
   return (
     <div className='flex flex-col min-h-screen'>
       <header className='bg-blue-600 text-white p-6'>
