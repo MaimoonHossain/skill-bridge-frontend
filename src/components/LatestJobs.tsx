@@ -15,7 +15,7 @@ export default function LatestJobs() {
     <section className='mt-10'>
       <h2 className='text-2xl font-semibold mb-4'>Latest Jobs</h2>
       <div className='grid gap-4'>
-        {jobs.map((job: Job) => (
+        {jobs?.map((job: Job) => (
           <Link
             key={job._id}
             href={`/jobs/${job._id}`}
