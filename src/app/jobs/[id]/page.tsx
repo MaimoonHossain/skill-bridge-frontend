@@ -67,6 +67,13 @@ export default function JobDetailsPage() {
           <p className='text-gray-800'>{job.location}</p>
         </div>
 
+        <div>
+          <h2 className='text-sm text-gray-500 uppercase tracking-wide'>
+            Total People Applied
+          </h2>
+          <p className='text-gray-800'>{job.applications?.length}</p>
+        </div>
+
         <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
           <div>
             <h2 className='text-sm text-gray-500 uppercase tracking-wide'>
