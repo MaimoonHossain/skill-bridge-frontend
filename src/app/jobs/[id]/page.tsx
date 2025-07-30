@@ -6,11 +6,13 @@ import { Loader2 } from "lucide-react";
 import axiosInstance from "@/lib/axiosInstance";
 import Job from "@/types/job";
 import { formatDistanceToNow } from "date-fns";
+import { useUserStore } from "@/store/useUserStore";
 
 export default function JobDetailsPage() {
   const { id } = useParams();
   const [job, setJob] = useState<Job | null>(null);
   const [loading, setLoading] = useState(true);
+  const user: any = useUserStore((state) => state.user);
 
   useEffect(() => {
     const fetchJob = async () => {
@@ -39,6 +41,8 @@ export default function JobDetailsPage() {
     return <div className='text-center mt-10 text-red-500'>Job not found.</div>;
   }
 
+  const applied = job.applications?.some((app) => app === user.id);
+
   return (
     <div className='max-w-4xl mx-auto px-4 py-10'>
       <div className='bg-white shadow-md rounded-xl p-6 space-y-6 border'>
@@ -49,8 +53,11 @@ export default function JobDetailsPage() {
               {job.jobType}
             </span>
           </div>
-          <button className='px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors'>
-            Apply Now
+          <button
+            disabled={!user || applied}
+            className='px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors'
+          >
+            {applied ? "Applied" : "Apply Now"}
           </button>
         </div>
 
