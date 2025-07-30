@@ -16,8 +16,8 @@ type Job = {
   };
   created_by: string;
   applications: string[];
-  createdAt?: string;
-  updatedAt?: string;
+  createdAt?: any; // Optional, in case some jobs don't have a created date
+  updatedAt?: any; // Optional, in case some jobs don't have an updated date
 };
 
 export default Job;

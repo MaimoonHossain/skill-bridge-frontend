@@ -4,39 +4,8 @@ import { useState } from "react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import JobCard from "@/components/JobCard";
-
-const dummyJobs = [
-  {
-    id: 1,
-    title: "Frontend Developer",
-    company: "Company Name",
-    location: "India",
-    description:
-      "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Assumenda eos provident.",
-    tags: ["12 Positions", "Part Time", "24LPA"],
-    createdAt: "2 days ago",
-  },
-  {
-    id: 2,
-    title: "Backend Developer",
-    company: "Company Name",
-    location: "India",
-    description:
-      "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Assumenda eos provident.",
-    tags: ["5 Positions", "Full Time", "30LPA"],
-    createdAt: "2 days ago",
-  },
-  {
-    id: 3,
-    title: "Fullstack Developer",
-    company: "Company Name",
-    location: "India",
-    description:
-      "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Assumenda eos provident.",
-    tags: ["3 Positions", "Internship", "10LPA"],
-    createdAt: "2 days ago",
-  },
-];
+import useGetAllJobs from "@/hooks/useGetAllJobs";
+import Job from "@/types/job";
 
 export default function JobsPage() {
   const [filters, setFilters] = useState({
@@ -48,6 +17,13 @@ export default function JobsPage() {
   const handleChange = (type: string, value: string) => {
     setFilters((prev) => ({ ...prev, [type]: value }));
   };
+
+  const { jobs, loading, error } = useGetAllJobs();
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error}</p>;
+  if (!jobs || jobs.length === 0)
+    return <p>No jobs available at the moment.</p>;
 
   return (
     <div className='flex p-6 gap-6 max-w-7xl mx-auto'>
@@ -114,15 +90,15 @@ export default function JobsPage() {
       {/* Jobs Section */}
       <section className='flex-1'>
         <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'>
-          {dummyJobs.map((job) => (
+          {jobs.map((job: Job) => (
             <JobCard
-              key={job.id}
-              id={job.id}
+              key={job._id}
+              id={job._id}
               title={job.title}
-              company={job.company}
+              company={job.company.name}
               location={job.location}
               description={job.description}
-              tags={job.tags}
+              tags={job.requirements}
               createdAt={job.createdAt}
             />
           ))}

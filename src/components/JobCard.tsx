@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { create } from "domain";
+import { format } from "date-fns";
 
 export interface JobCardProps {
   id: string | number;
@@ -24,7 +26,9 @@ export default function JobCard({
 }: JobCardProps) {
   return (
     <div className='border p-4 rounded-lg shadow-sm hover:shadow-md transition'>
-      <div className='text-sm text-gray-500 mb-1'>{createdAt}</div>
+      <div className='text-sm text-gray-500 mb-1'>
+        {createdAt && format(new Date(createdAt), "MMM dd, yyyy")}
+      </div>
       <div className='flex items-center justify-between mb-2'>
         <div>
           <h4 className='font-semibold text-gray-800'>{company}</h4>
@@ -51,21 +55,21 @@ export default function JobCard({
       <h3 className='text-lg font-bold text-gray-900 mb-1'>{title}</h3>
       <p className='text-sm text-gray-600 mb-3'>{description}</p>
       <div className='flex flex-wrap gap-2 mb-3'>
-        {tags.map((tag) => (
+        {tags.length > 0 && (
           <span
-            key={tag}
+            key={tags[0]}
             className={cn(
               "text-xs px-2 py-1 rounded-full font-medium",
-              tag === "Part Time"
+              tags[0] === "Part Time"
                 ? "bg-yellow-100 text-yellow-800"
-                : tag.includes("LPA")
+                : tags[0].includes("LPA")
                 ? "bg-purple-100 text-purple-800"
                 : "bg-blue-100 text-blue-800"
             )}
           >
-            {tag}
+            {tags[0]}
           </span>
-        ))}
+        )}
       </div>
       <div className='flex justify-between'>
         <Link
