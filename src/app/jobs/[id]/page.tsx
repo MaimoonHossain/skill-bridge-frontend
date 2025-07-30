@@ -42,10 +42,15 @@ export default function JobDetailsPage() {
     <div className='max-w-4xl mx-auto px-4 py-10'>
       <div className='bg-white shadow-md rounded-xl p-6 space-y-6 border'>
         <div className='flex items-center justify-between'>
-          <h1 className='text-2xl font-bold text-gray-900'>{job.title}</h1>
-          <span className='text-sm px-3 py-1 rounded-full bg-blue-100 text-blue-800 font-medium'>
-            {job.jobType}
-          </span>
+          <div>
+            <h1 className='text-2xl font-bold text-gray-900'>{job.title}</h1>
+            <span className='text-sm px-3 py-1 rounded-full bg-blue-100 text-blue-800 font-medium'>
+              {job.jobType}
+            </span>
+          </div>
+          <button className='px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors'>
+            Apply Now
+          </button>
         </div>
 
         <div>
