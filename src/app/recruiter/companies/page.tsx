@@ -7,15 +7,7 @@ import { CompanyTable } from "@/common/recruiter/CompanyTable";
 import { AddCompanyModal } from "@/common/recruiter/AddCompanyModal";
 import { ConfirmDeleteModal } from "@/common/recruiter/ConfirmDeleteModal";
 import axiosInstance from "@/lib/axiosInstance";
-
-export type Company = {
-  id: number | string;
-  name: string;
-  description: string;
-  website: string;
-  location: string;
-  logo?: string;
-};
+import { Company } from "@/types/company";
 
 const CompaniesPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -38,21 +30,21 @@ const CompaniesPage = () => {
     fetchCompanies();
   }, []);
 
-  const filteredCompanies = companies?.filter((company) =>
+  const filteredCompanies = companies?.filter((company: Company) =>
     company.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const handleDelete = (id: number | string) => {
-    setCompanies((prev) => prev.filter((c) => c.id !== id));
+  const handleDelete = (_id: number | string) => {
+    setCompanies((prev) => prev.filter((c) => c._id !== _id));
     setConfirmOpen(false);
     setDeleteData(null);
   };
 
   const handleSave = (newCompany: Company) => {
     setCompanies((prev) => {
-      const exists = prev.find((c) => c.id === newCompany.id);
+      const exists = prev.find((c) => c._id === newCompany._id);
       if (exists) {
-        return prev.map((c) => (c.id === newCompany.id ? newCompany : c));
+        return prev.map((c) => (c._id === newCompany._id ? newCompany : c));
       }
       return [...prev, newCompany];
     });
@@ -100,7 +92,7 @@ const CompaniesPage = () => {
           setConfirmOpen(false);
           setDeleteData(null);
         }}
-        onConfirm={() => deleteData && handleDelete(deleteData.id)}
+        onConfirm={() => deleteData && handleDelete(deleteData._id)}
         title='Delete Company'
         description={`Are you sure you want to delete "${deleteData?.name}"? This action cannot be undone.`}
       />

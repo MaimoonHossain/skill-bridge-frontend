@@ -14,20 +14,14 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { MoreVertical, Pencil, Trash } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Company } from "@/types/company";
 
 export const CompanyTable = ({
   companies,
   onEdit,
   onDelete,
 }: {
-  companies: {
-    _id: number | string;
-    name: string;
-    description: string;
-    website: string;
-    location: string;
-    logo?: string;
-  }[];
+  companies: Company[];
   onEdit: (company: any) => void;
   onDelete: (company: any) => void;
 }) => {

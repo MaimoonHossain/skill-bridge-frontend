@@ -99,17 +99,26 @@ export const AddCompanyModal = ({
       }
 
       let response;
-      if (company?.id) {
-        // For editing (update) -- update logic depends on your API
-        // For now, we just call onSave directly with updated data
-        onSave({
-          id: company.id,
-          name: form.name,
-          description: form.description,
-          website: form.website,
-          location: form.location,
-          logo: form.logoPreview,
-        });
+      if (company?._id) {
+        // Update existing company
+        response = await axiosInstance.patch(
+          `/company/update/${company._id}`,
+          data,
+          {
+            headers: { "Content-Type": "multipart/form-data" },
+          }
+        );
+
+        toast.success("Company updated successfully!");
+        const updatedCompany: Company = {
+          _id: response.data.company._id,
+          name: response.data.company.name,
+          description: response.data.company.description,
+          website: response.data.company.website,
+          location: response.data.company.location,
+          logo: response.data.company.logo,
+        };
+        onSave(updatedCompany);
         onClose();
       } else {
         // For creating new company
@@ -119,7 +128,7 @@ export const AddCompanyModal = ({
 
         toast.success("Company registered successfully!");
         const newCompany: Company = {
-          id: response.data.company._id,
+          _id: response.data.company._id,
           name: form.name,
           description: form.description,
           website: form.website,
