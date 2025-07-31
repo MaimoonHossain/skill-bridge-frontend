@@ -78,9 +78,9 @@ export const CompanyTable = ({
                     <DropdownMenuItem onClick={() => onEdit(company)}>
                       <Pencil className='mr-2 h-4 w-4' /> Edit
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => onDelete(company)}>
+                    {/* <DropdownMenuItem onClick={() => onDelete(company)}>
                       <Trash className='mr-2 h-4 w-4 text-red-500' /> Delete
-                    </DropdownMenuItem>
+                    </DropdownMenuItem> */}
                   </DropdownMenuContent>
                 </DropdownMenu>
               </TableCell>
