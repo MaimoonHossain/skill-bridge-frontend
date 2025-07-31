@@ -9,6 +9,7 @@ import axiosInstance from "@/lib/axiosInstance";
 import Job from "@/types/job";
 import { JobTable } from "@/common/recruiter/JobsTable";
 import { Company } from "@/types/company";
+import toast from "react-hot-toast";
 
 const JobsPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -51,10 +52,23 @@ const JobsPage = () => {
     job.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const handleDelete = (_id: string | number) => {
-    setJobs((prev) => prev.filter((j) => j._id !== _id));
-    setConfirmOpen(false);
-    setDeleteData(null);
+  const handleDelete = async (_id: string) => {
+    try {
+      const response = await axiosInstance.delete(`/job/delete/${_id}`);
+
+      if (response.data.success) {
+        toast.success("Job deleted successfully");
+
+        // Update UI
+        setJobs((prev) => prev.filter((j) => j._id !== _id));
+        setConfirmOpen(false);
+        setDeleteData(null);
+      } else {
+        toast.error(response.data.message || "Failed to delete job");
+      }
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message || "Something went wrong");
+    }
   };
 
   const handleSave = (newJob: Job) => {
