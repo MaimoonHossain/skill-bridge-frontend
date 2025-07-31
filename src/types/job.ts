@@ -1,3 +1,5 @@
+import { Company } from "./company";
+
 type Job = {
   _id: string;
   title: string;
@@ -8,12 +10,7 @@ type Job = {
   location: string;
   jobType: string;
   position: number;
-  company: {
-    _id: string;
-    name: string;
-    logo?: string; // Optional, in case some jobs don't have a logo
-    description?: string; // Optional, in case some companies don't have a description
-  };
+  company: Company;
   created_by: string;
   applications: string[];
   createdAt?: any; // Optional, in case some jobs don't have a created date
