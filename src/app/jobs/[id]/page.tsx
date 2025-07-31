@@ -78,19 +78,21 @@ export default function JobDetailsPage() {
               {job.jobType}
             </span>
           </div>
-          <button
-            disabled={!user || applied}
-            onClick={handleApply}
-            type='button'
-            className={`px-4 py-2 rounded-lg transition-colors 
+          {user.role === "student" && (
+            <button
+              disabled={!user || applied}
+              onClick={handleApply}
+              type='button'
+              className={`px-4 py-2 rounded-lg transition-colors 
                   ${
                     !user || applied
                       ? "bg-gray-400 cursor-not-allowed"
                       : "bg-blue-600 hover:bg-blue-700 text-white"
                   }`}
-          >
-            {applied ? "Applied" : "Apply Now"}
-          </button>
+            >
+              {applied ? "Applied" : "Apply Now"}
+            </button>
+          )}
         </div>
 
         <div>
