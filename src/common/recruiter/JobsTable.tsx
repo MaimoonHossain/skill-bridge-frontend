@@ -36,6 +36,7 @@ export const JobTable = ({
             <TableHead>Location</TableHead>
             <TableHead>Experience</TableHead>
             <TableHead>Type</TableHead>
+            <TableHead>Applications</TableHead>
             <TableHead className='text-right'>Actions</TableHead>
           </TableRow>
         </TableHeader>
@@ -58,6 +59,14 @@ export const JobTable = ({
               <TableCell>{job.location}</TableCell>
               <TableCell>{job.experienceLevel} yrs</TableCell>
               <TableCell>{job.jobType}</TableCell>
+              <TableCell>
+                <Link
+                  href={`/recruiter/applications/${job._id}`}
+                  className='text-blue-600 hover:underline'
+                >
+                  {job?.applications?.length || 0} Applications
+                </Link>
+              </TableCell>
               <TableCell className='text-right'>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
