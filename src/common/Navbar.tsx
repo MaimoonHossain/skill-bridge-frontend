@@ -47,7 +47,7 @@ export default function NavBar() {
                 "text-gray-700 hover:text-blue-600 transition-colors font-medium"
               )}
             >
-              Dashboard
+              Companies
             </Link>
             <Link
               href='/recruiter/jobs'

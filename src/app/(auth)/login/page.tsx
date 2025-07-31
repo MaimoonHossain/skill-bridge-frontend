@@ -42,7 +42,9 @@ export default function LoginPage() {
       if (res.data.success) {
         setUser(res.data.user);
         toast.success("Login successful!");
-        router.push("/"); // Redirect to homepage
+        res.data.user.role === "student"
+          ? router.push("/")
+          : router.push("/recruiter/companies");
       }
     } catch (err: any) {
       setServerError(err.response?.data?.message || "Login failed");

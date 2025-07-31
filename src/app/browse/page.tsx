@@ -1,4 +1,4 @@
-import JobCard from "@/components/JobCard";
+import JobCard from "@/common/JobCard";
 import React from "react";
 
 const dummyJobs = [

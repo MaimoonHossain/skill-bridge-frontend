@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import JobCard from "@/components/JobCard";
+import JobCard from "@/common/JobCard";
 import useGetAllJobs from "@/hooks/useGetAllJobs";
 import Job from "@/types/job";
 
