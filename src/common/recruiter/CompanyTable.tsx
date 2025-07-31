@@ -15,6 +15,7 @@ import {
 import { MoreVertical, Pencil, Trash } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Company } from "@/types/company";
+import Link from "next/link";
 
 export const CompanyTable = ({
   companies,
@@ -54,7 +55,14 @@ export const CompanyTable = ({
                   </div>
                 )}
               </TableCell>
-              <TableCell className='font-medium'>{company.name}</TableCell>
+              <TableCell className='font-medium'>
+                <Link
+                  href={`/recruiter/companies/${company._id}`}
+                  className='text-blue-600 hover:underline'
+                >
+                  {company.name}
+                </Link>
+              </TableCell>
               <TableCell>{company.description}</TableCell>
               <TableCell>
                 <a
