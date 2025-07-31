@@ -21,7 +21,7 @@ export const CompanyTable = ({
   onDelete,
 }: {
   companies: {
-    id: number | string;
+    _id: number | string;
     name: string;
     description: string;
     website: string;
