@@ -65,7 +65,7 @@ export default function JobDetailsPage() {
   }
 
   const applied = job.applications?.some(
-    (app: any) => app?.applicant === user?.id
+    (app: any) => app?.applicant._id === user?.id
   );
 
   return (
