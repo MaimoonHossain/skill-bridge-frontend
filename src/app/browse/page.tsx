@@ -1,40 +1,33 @@
+"use client";
 import JobCard from "@/common/JobCard";
-import React from "react";
-
-const dummyJobs = [
-  {
-    id: 1,
-    title: "Frontend Developer",
-    company: "Company Name",
-    location: "India",
-    description:
-      "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Assumenda eos provident.",
-    tags: ["12 Positions", "Part Time", "24LPA"],
-    createdAt: "2 days ago",
-  },
-  {
-    id: 2,
-    title: "Backend Developer",
-    company: "Company Name",
-    location: "India",
-    description:
-      "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Assumenda eos provident.",
-    tags: ["5 Positions", "Full Time", "30LPA"],
-    createdAt: "2 days ago",
-  },
-  {
-    id: 3,
-    title: "Fullstack Developer",
-    company: "Company Name",
-    location: "India",
-    description:
-      "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Assumenda eos provident.",
-    tags: ["3 Positions", "Internship", "10LPA"],
-    createdAt: "2 days ago",
-  },
-];
+import axiosInstance from "@/lib/axiosInstance";
+import { useSearchParams } from "next/navigation";
+import React, { useEffect, useState } from "react";
 
 export default function BrowsePage() {
+  const searchParams = useSearchParams();
+  const keyword = searchParams.get("keyword") || "";
+
+  const [filteredJobs, setFilteredJobs] = useState([]);
+
+  useEffect(() => {
+    if (keyword) {
+      // Fetch jobs based on keyword query
+      const fetchJobs = async () => {
+        try {
+          const response = await axiosInstance.get(
+            `/job/get?keyword=${keyword}`
+          );
+          setFilteredJobs(response.data.jobs);
+        } catch (error) {
+          console.error("Error fetching jobs:", error);
+        }
+      };
+      fetchJobs();
+    }
+  }, [keyword]);
+
+  console.log("first", filteredJobs);
   return (
     <div className='p-6 max-w-7xl mx-auto'>
       <div>
@@ -44,15 +37,15 @@ export default function BrowsePage() {
         </p>
       </div>
       <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'>
-        {dummyJobs.map((job) => (
+        {filteredJobs?.map((job: any) => (
           <JobCard
-            key={job.id}
-            id={job.id}
+            key={job._id}
+            id={job._id}
             title={job.title}
-            company={job.company}
+            company={job.company?.name}
             location={job.location}
             description={job.description}
-            tags={job.tags}
+            tags={["Full-Time"]} // fallback since tags don't exist in API response
             createdAt={job.createdAt}
           />
         ))}

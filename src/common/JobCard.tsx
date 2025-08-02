@@ -4,11 +4,12 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { create } from "domain";
 import { format } from "date-fns";
+import { Company } from "@/types/company";
 
 export interface JobCardProps {
   id: string | number;
   title: string;
-  company: string;
+  company: Company;
   location: string;
   description: string;
   tags: string[];
@@ -55,7 +56,7 @@ export default function JobCard({
       <h3 className='text-lg font-bold text-gray-900 mb-1'>{title}</h3>
       <p className='text-sm text-gray-600 mb-3'>{description}</p>
       <div className='flex flex-wrap gap-2 mb-3'>
-        {tags.length > 0 && (
+        {tags?.length > 0 && (
           <span
             key={tags[0]}
             className={cn(

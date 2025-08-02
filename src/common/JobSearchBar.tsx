@@ -12,7 +12,7 @@ export default function JobSearchBar() {
     if (!searchTerm.trim()) return;
 
     // Navigate to jobs page with search query
-    router.push(`/jobs?search=${encodeURIComponent(searchTerm.trim())}`);
+    router.push(`/browse?keyword=${encodeURIComponent(searchTerm.trim())}`);
   };
 
   return (
