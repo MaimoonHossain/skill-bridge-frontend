@@ -16,7 +16,16 @@ import {
 import { Button } from "@/components/ui/button";
 import { Check, MoreVertical, X } from "lucide-react";
 
-export const ApplicantTable = ({ applications }: { applications: any }) => {
+export const ApplicantTable = ({
+  applications,
+  onUpdateStatus,
+}: {
+  applications: any;
+  onUpdateStatus: (
+    applicationId: string,
+    status: "accepted" | "rejected"
+  ) => void;
+}) => {
   return (
     <div className='rounded-xl border shadow-sm overflow-x-auto'>
       <Table>
@@ -84,10 +93,20 @@ export const ApplicantTable = ({ applications }: { applications: any }) => {
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align='end'>
-                      <DropdownMenuItem>
+                      <DropdownMenuItem
+                        className='cursor-pointer'
+                        onClick={() =>
+                          onUpdateStatus(application._id, "accepted")
+                        }
+                      >
                         <Check className='mr-2 h-4 w-4' /> Accept
                       </DropdownMenuItem>
-                      <DropdownMenuItem>
+                      <DropdownMenuItem
+                        className='cursor-pointer'
+                        onClick={() =>
+                          onUpdateStatus(application._id, "rejected")
+                        }
+                      >
                         <X className='mr-2 h-4 w-4 text-red-500' /> Reject
                       </DropdownMenuItem>
                     </DropdownMenuContent>

@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
 import { ApplicantTable } from "./ApplicantTable";
+import toast from "react-hot-toast";
 
 interface Applicant {
   _id: string;
@@ -48,6 +49,21 @@ export default function ApplicantList({ jobId }: { jobId: string }) {
     }
   };
 
+  const handleUpdateStatus = async (
+    applicationId: string,
+    status: "accepted" | "rejected"
+  ) => {
+    try {
+      await axiosInstance.patch(`/application/update-status/${applicationId}`, {
+        status,
+      });
+      toast.success(`Application ${status} successfully!`);
+      fetchApplicants(); // Refresh the list after updating
+    } catch (error) {
+      console.error("Error updating application status:", error);
+    }
+  };
+
   const filteredApplications = applications.filter((application) =>
     application.applicant.fullName
       .toLowerCase()
@@ -69,7 +85,10 @@ export default function ApplicantList({ jobId }: { jobId: string }) {
         />
       </div>
 
-      <ApplicantTable applications={filteredApplications} />
+      <ApplicantTable
+        applications={filteredApplications}
+        onUpdateStatus={handleUpdateStatus}
+      />
     </div>
   );
 }
