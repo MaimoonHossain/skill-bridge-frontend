@@ -9,7 +9,7 @@ import { Company } from "@/types/company";
 export interface JobCardProps {
   id: string | number;
   title: string;
-  company: Company;
+  company: string;
   location: string;
   description: string;
   tags: string[];
