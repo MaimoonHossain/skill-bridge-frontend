@@ -1,8 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
-import { cn } from "@/lib/utils";
+import { useState, useMemo } from "react";
 import JobCard from "@/common/JobCard";
 import useGetAllJobs from "@/hooks/useGetAllJobs";
 import Job from "@/types/job";
@@ -14,11 +12,38 @@ export default function JobsPage() {
     salary: "",
   });
 
+  const { jobs, loading, error } = useGetAllJobs();
+
   const handleChange = (type: string, value: string) => {
     setFilters((prev) => ({ ...prev, [type]: value }));
   };
 
-  const { jobs, loading, error } = useGetAllJobs();
+  // 🧠 Filter logic
+  const filteredJobs = useMemo(() => {
+    return jobs.filter((job: Job) => {
+      const matchLocation =
+        !filters.location ||
+        job.location.toLowerCase().includes(filters.location.toLowerCase());
+
+      const matchIndustry =
+        !filters.industry ||
+        job.title.toLowerCase().includes(filters.industry.toLowerCase());
+
+      const matchSalary = (() => {
+        if (!filters.salary) return true;
+
+        const salary = Number(job.salary);
+        if (filters.salary === "0-40k") return salary <= 40000;
+        if (filters.salary === "42-1lakh")
+          return salary >= 42000 && salary <= 100000;
+        if (filters.salary === "1lakh to 5lakh")
+          return salary > 100000 && salary <= 500000;
+        return true;
+      })();
+
+      return matchLocation && matchIndustry && matchSalary;
+    });
+  }, [jobs, filters]);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
@@ -29,25 +54,32 @@ export default function JobsPage() {
     <div className='flex p-6 gap-6 max-w-7xl mx-auto'>
       {/* Filter Sidebar */}
       <aside className='w-1/4 border-r pr-6'>
+        {/* Location Filter */}
         <div className='mb-6'>
           <h3 className='font-semibold mb-2 text-gray-800'>Location</h3>
-          {["Delhi NCR", "Bangalore", "Hyderabad", "Pune", "Mumbai"].map(
-            (loc) => (
-              <label key={loc} className='block text-sm text-gray-700'>
-                <input
-                  type='radio'
-                  name='location'
-                  value={loc}
-                  checked={filters.location === loc}
-                  onChange={() => handleChange("location", loc)}
-                  className='mr-2'
-                />
-                {loc}
-              </label>
-            )
-          )}
+          {[
+            "Delhi NCR",
+            "Bangalore",
+            "Hyderabad",
+            "Pune",
+            "Mumbai",
+            "Dhaka",
+          ].map((loc) => (
+            <label key={loc} className='block text-sm text-gray-700'>
+              <input
+                type='radio'
+                name='location'
+                value={loc}
+                checked={filters.location === loc}
+                onChange={() => handleChange("location", loc)}
+                className='mr-2'
+              />
+              {loc}
+            </label>
+          ))}
         </div>
 
+        {/* Industry Filter */}
         <div className='mb-6'>
           <h3 className='font-semibold mb-2 text-gray-800'>Industry</h3>
           {[
@@ -69,6 +101,7 @@ export default function JobsPage() {
           ))}
         </div>
 
+        {/* Salary Filter */}
         <div>
           <h3 className='font-semibold mb-2 text-gray-800'>Salary</h3>
           {["0-40k", "42-1lakh", "1lakh to 5lakh"].map((sal) => (
@@ -89,20 +122,24 @@ export default function JobsPage() {
 
       {/* Jobs Section */}
       <section className='flex-1'>
-        <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'>
-          {jobs.map((job: Job) => (
-            <JobCard
-              key={job._id}
-              id={job._id}
-              title={job.title}
-              company={job.company.name}
-              location={job.location}
-              description={job.description}
-              tags={job.requirements}
-              createdAt={job.createdAt}
-            />
-          ))}
-        </div>
+        {filteredJobs.length === 0 ? (
+          <p className='text-gray-600'>No jobs match the selected filters.</p>
+        ) : (
+          <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'>
+            {filteredJobs.map((job: Job) => (
+              <JobCard
+                key={job._id}
+                id={job._id}
+                title={job.title}
+                company={job.company.name}
+                location={job.location}
+                description={job.description}
+                tags={job.requirements}
+                createdAt={job.createdAt}
+              />
+            ))}
+          </div>
+        )}
       </section>
     </div>
   );
