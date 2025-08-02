@@ -40,7 +40,9 @@ export default function ApplicantList({ jobId }: { jobId: string }) {
 
   const fetchApplicants = async () => {
     try {
-      const response = await axiosInstance.get(`/job/get/${jobId}`);
+      const response = await axiosInstance.get(
+        `/application/applicants/${jobId}`
+      );
       const job = response.data.job;
       const data: Application[] = job.applications;
       setApplications(data);
