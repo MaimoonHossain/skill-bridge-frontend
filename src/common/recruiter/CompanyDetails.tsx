@@ -14,7 +14,7 @@ export default function CompanyDetails({ companyId }: { companyId: string }) {
   useEffect(() => {
     const fetchCompany = async () => {
       try {
-        const res = await axiosInstance.get(`/company/get/${companyId}`);
+        const res = await axiosInstance.get(`/job/get/${companyId}`);
         setCompany(res.data.company);
       } catch (err: any) {
         toast.error(err?.response?.data?.message || "Failed to load company.");

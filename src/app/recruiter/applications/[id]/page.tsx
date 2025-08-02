@@ -1,3 +1,4 @@
+import ApplicantList from "@/common/recruiter/ApplicantList";
 import CompanyDetails from "@/common/recruiter/CompanyDetails";
 import React, { Suspense } from "react";
 
@@ -7,7 +8,7 @@ export default function ApplicationsPage({
   params: { id: string };
 }) {
   return (
-    <div className='max-w-4xl mx-auto px-4 py-8'>
+    <div className='p-6 space-y-6'>
       <Suspense
         fallback={
           <div className='text-center text-gray-500'>
@@ -15,7 +16,7 @@ export default function ApplicationsPage({
           </div>
         }
       >
-        <CompanyDetails companyId={params.id} />
+        <ApplicantList jobId={params.id} />
       </Suspense>
     </div>
   );
