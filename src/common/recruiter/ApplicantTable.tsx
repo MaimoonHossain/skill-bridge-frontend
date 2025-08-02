@@ -7,6 +7,14 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Application } from "@/types/application";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { Check, MoreVertical, X } from "lucide-react";
 
 export const ApplicantTable = ({ applications }: { applications: any }) => {
   return (
@@ -68,7 +76,7 @@ export const ApplicantTable = ({ applications }: { applications: any }) => {
                 <TableCell>
                   {new Date(application.createdAt).toLocaleDateString()}
                 </TableCell>
-                {/* <TableCell className='text-right'>
+                <TableCell className='text-right'>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button variant='ghost' size='icon'>
@@ -76,15 +84,15 @@ export const ApplicantTable = ({ applications }: { applications: any }) => {
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align='end'>
-                      <DropdownMenuItem onClick={() => onEdit(applicant)}>
-                        <Pencil className='mr-2 h-4 w-4' /> Edit
+                      <DropdownMenuItem>
+                        <Check className='mr-2 h-4 w-4' /> Accept
                       </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => onDelete(applicant)}>
-                        <Trash className='mr-2 h-4 w-4 text-red-500' /> Delete
+                      <DropdownMenuItem>
+                        <X className='mr-2 h-4 w-4 text-red-500' /> Reject
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
-                </TableCell> */}
+                </TableCell>
               </TableRow>
             );
           })}
