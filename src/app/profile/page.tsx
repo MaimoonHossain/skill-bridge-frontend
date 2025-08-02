@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -10,6 +10,7 @@ import { useUserStore } from "@/store/useUserStore";
 import Image from "next/image";
 import { DummyAvatar } from "@/assets/images";
 import Link from "next/link";
+import { AppliedJobsTable } from "@/common/recruiter/AppliedJobs";
 
 const schema = z.object({
   fullName: z.string().min(1, "Full Name is required"),
@@ -28,6 +29,7 @@ export default function ProfilePage() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [selectedResume, setSelectedResume] = useState<File | null>(null);
   const [resumeName, setResumeName] = useState<string>("");
+  const [appliedJobs, setAppliedJobs] = useState<any[]>([]);
 
   const user = useUserStore((state) => state.user);
   const setUser = useUserStore((state) => state.setUser);
@@ -64,6 +66,22 @@ export default function ProfilePage() {
       setResumeName(file.name);
     }
   };
+
+  const fetchAppliedJobs = async () => {
+    try {
+      const response = await axiosInstance.get("/application/get");
+      setAppliedJobs(response.data.applications);
+    } catch (error) {
+      console.error("Error fetching applications:", error);
+      return [];
+    }
+  };
+
+  useEffect(() => {
+    if (user) {
+      fetchAppliedJobs();
+    }
+  }, [user]);
 
   const onSubmit = async (data: FormData) => {
     try {
@@ -315,6 +333,11 @@ export default function ProfilePage() {
             </div>
           </form>
         )}
+      </div>
+
+      <div>
+        <h2 className='text-lg font-semibold mb-4'>Applied Jobs</h2>
+        <AppliedJobsTable applications={appliedJobs} />
       </div>
     </div>
   );
